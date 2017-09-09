@@ -4,6 +4,7 @@ using System.Text;
 using CustomerAppDAL;
 using System.Linq;
 using CustomerAppBLL.BusinessObjects;
+using CustomerAppBLL.Converters;
 using CustomerAppDAL.Entities;
 
 
@@ -12,6 +13,7 @@ namespace CustomerAppBLL.Services
     class CustomerService : ICustomerService
     {
         DALFacade facade;
+        private CustomerConverter conv = new CustomerConverter();
 
         public CustomerService(DALFacade facade)
         {
@@ -22,10 +24,10 @@ namespace CustomerAppBLL.Services
         {
             using (var uow = facade.UnitOfWork)
             {
-                var newCust = uow.CustomerRepository.Create(Convert(cust));
+                var newCust = uow.CustomerRepository.Create(conv.Convert(cust));
                 uow.Complete();
                
-                return Convert(newCust);
+                return conv.Convert(newCust);
             }
             
             
@@ -38,7 +40,7 @@ namespace CustomerAppBLL.Services
             {
                 var newCust = uow.CustomerRepository.Delete(Id);
                 uow.Complete();
-                return Convert(newCust);
+                return conv.Convert(newCust);
             }
             
       
@@ -49,7 +51,7 @@ namespace CustomerAppBLL.Services
             
             using (var uow = facade.UnitOfWork)
             {
-                return Convert(uow.CustomerRepository.Get(Id));
+                return conv.Convert(uow.CustomerRepository.Get(Id));
             }
 
         }
@@ -59,7 +61,7 @@ namespace CustomerAppBLL.Services
             using (var uow = facade.UnitOfWork)
             {
                 //return uow.CustomerRepository.GetAll();
-                return uow.CustomerRepository.GetAll().Select(c => Convert(c)).ToList();
+                return uow.CustomerRepository.GetAll().Select(c => conv.Convert(c)).ToList();
             }
         }
 
@@ -76,7 +78,7 @@ namespace CustomerAppBLL.Services
                 customerFromDb.LastName = cust.LastName;
                 customerFromDb.Address = cust.Address;
                 uow.Complete();
-                return Convert(customerFromDb);
+                return conv.Convert(customerFromDb);
             }
             
             
@@ -84,26 +86,6 @@ namespace CustomerAppBLL.Services
 
         }
 
-        private Customer Convert(CustomerBO cust)
-        {
-            return new Customer()
-            {
-                Id = cust.Id,
-                Address = cust.Address,
-                FirstName = cust.FirstName,
-                LastName = cust.LastName
-            };
-        }
-
-        private CustomerBO Convert(Customer cust)
-        {
-            return new CustomerBO()
-            {
-                Id = cust.Id,
-                Address = cust.Address,
-                FirstName = cust.FirstName,
-                LastName = cust.LastName
-            };
-        }
+        
     }
 }

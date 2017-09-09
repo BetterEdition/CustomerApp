@@ -143,7 +143,7 @@ namespace CustomerAppUI
                 FirstName = firstName,
                 LastName = lastName,
                 Address = address
-
+6
             });
         }
 
@@ -168,7 +168,7 @@ namespace CustomerAppUI
             {
                 Console.WriteLine($"{ (i + 1)}: {menuItems[i]}");
                 Console.WriteLine("");
-
+                
             }
             int selection;
             while (!int.TryParse(Console.ReadLine(), out selection) || selection > 5 || selection < 1)
